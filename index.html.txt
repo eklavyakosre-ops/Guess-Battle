@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🎮 Guess Battle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🎮 Guess Battle</h1>
+
+<!-- MENU -->
+<div id="menu">
+  <button onclick="startComputer()">🤖 Play with Computer</button>
+  <button onclick="showFriendSetup()">👬 Play with Friend</button>
+</div>
+
+<!-- FRIEND SETUP -->
+<div id="setup" class="hidden">
+  <input id="p1" placeholder="Player 1 Name">
+  <input id="p2" placeholder="Player 2 Name">
+  <button onclick="startFriend()">Start Game</button>
+  <button onclick="goBack()">🔙 Back</button>
+</div>
+
+<!-- GAME -->
+<div id="game" class="hidden">
+  <h2 id="turn"></h2>
+  <div id="grid"></div>
+  <p id="msg"></p>
+  <p id="attempt"></p>
+
+  <button onclick="restart()">🔄 Restart</button>
+  <button onclick="goBack()">🔙 Back</button>
+</div>
+
+<div id="celebration"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

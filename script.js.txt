@@ -1,0 +1,170 @@
+let mode="";
+let num,attempt;
+let p1="",p2="",turn=1;
+
+// START COMPUTER
+function startComputer(){
+  mode="computer";
+  startGame();
+}
+
+// FRIEND SETUP
+function showFriendSetup(){
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+}
+
+// START FRIEND
+function startFriend(){
+  p1=document.getElementById("p1").value;
+  p2=document.getElementById("p2").value;
+  mode="friend";
+  startGame();
+}
+
+// START GAME
+function startGame(){
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  num=Math.floor(Math.random()*50)+1;
+  attempt = (mode==="friend")?10:5;
+  turn = 1;
+
+  document.getElementById("msg").innerText="";
+  document.getElementById("attempt").innerText="Attempts: "+attempt;
+  document.getElementById("celebration").innerHTML="";
+
+  createGrid();
+  updateTurn();
+}
+
+// GRID
+function createGrid(){
+  let g=document.getElementById("grid");
+  g.innerHTML="";
+  for(let i=1;i<=50;i++){
+    let b=document.createElement("button");
+    b.innerText=i;
+    b.className="number-btn";
+    b.onclick=()=>check(i,b);
+    g.appendChild(b);
+  }
+}
+
+// CHECK
+function check(v,b){
+  if(attempt<=0) return;
+
+  attempt--;
+
+  if(v==num){
+    document.getElementById("msg").innerText=
+      mode==="friend" ? getPlayer()+" Wins 😎🔥" : "🎉 You Win!";
+    b.classList.add("correct");
+    celebrate();
+    disable();
+  }else{
+    b.classList.add("wrong");
+    document.getElementById("msg").innerText=
+      v>num?"📉 High":"📈 Low";
+
+    if(mode==="friend"){
+      turn = turn==1?2:1;
+      updateTurn();
+    }
+
+    if(attempt==0){
+      document.getElementById("msg").innerText="💀 Game Over "+num;
+      celebrate();
+      disable();
+    }
+  }
+
+  document.getElementById("attempt").innerText="Attempts: "+attempt;
+}
+
+// PLAYER
+function getPlayer(){
+  return turn==1?p1:p2;
+}
+
+function updateTurn(){
+  if(mode==="friend"){
+    document.getElementById("turn").innerText=
+      turn==1?p1+"'s Turn":p2+"'s Turn";
+  }else{
+    document.getElementById("turn").innerText="";
+  }
+}
+
+// DISABLE
+function disable(){
+  document.querySelectorAll(".number-btn").forEach(b=>b.disabled=true);
+}
+
+// 🔄 RESTART (FIXED)
+function restart(){
+  startGame(); // pura game reset + new number
+}
+
+// 🔙 BACK (FIXED)
+function goBack(){
+  // sab reset karke menu me wapas
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("menu").classList.remove("hidden");
+
+  document.getElementById("msg").innerText="";
+  document.getElementById("attempt").innerText="";
+  document.getElementById("turn").innerText="";
+  document.getElementById("celebration").innerHTML="";
+}
+
+// 🎉 CELEBRATION
+function celebrate(){
+  let c=document.getElementById("celebration");
+  c.innerHTML="";
+
+  for(let i=0;i<250;i++){
+    let d=document.createElement("div");
+    d.className="confetti";
+    d.style.left=Math.random()*100+"vw";
+    d.style.background=randomColor();
+    d.style.animationDuration=(Math.random()*2+2)+"s";
+    c.appendChild(d);
+  }
+
+  for(let i=0;i<25;i++){
+    createCracker("left");
+    createCracker("right");
+  }
+
+  for(let i=0;i<40;i++){
+    let s=document.createElement("div");
+    s.className="spark";
+    s.style.left="50%";
+    s.style.top="50%";
+    s.style.background=randomColor();
+    c.appendChild(s);
+  }
+
+  document.body.classList.add("shake");
+  setTimeout(()=>document.body.classList.remove("shake"),500);
+}
+
+function createCracker(side){
+  let d=document.createElement("div");
+  d.className="cracker";
+  d.style[side]="0px";
+  d.style.top=Math.random()*80+"%";
+  d.style.background=randomColor();
+  d.style.animation = side==="left"?"shootRight 1s":"shootLeft 1s";
+  document.getElementById("celebration").appendChild(d);
+}
+
+function randomColor(){
+  let colors=["#ff4b2b","#ffcc00","#00ffcc","#ff00ff","#00ff88","#00c6ff"];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
